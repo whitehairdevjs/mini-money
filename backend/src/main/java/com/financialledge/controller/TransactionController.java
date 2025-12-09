@@ -35,10 +35,17 @@ public class TransactionController {
         return ResponseEntity.ok(transactions);
     }
 
-    @GetMapping("/category/{category}")
-    public ResponseEntity<List<Transaction>> getTransactionsByCategory(
-            @PathVariable String category) {
-        List<Transaction> transactions = transactionService.getTransactionsByCategory(category);
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<Transaction>> getTransactionsByCategoryId(
+            @PathVariable Long categoryId) {
+        List<Transaction> transactions = transactionService.getTransactionsByCategoryId(categoryId);
+        return ResponseEntity.ok(transactions);
+    }
+
+    @GetMapping("/account/{accountId}")
+    public ResponseEntity<List<Transaction>> getTransactionsByAccountId(
+            @PathVariable Long accountId) {
+        List<Transaction> transactions = transactionService.getTransactionsByAccountId(accountId);
         return ResponseEntity.ok(transactions);
     }
 

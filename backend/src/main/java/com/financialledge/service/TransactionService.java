@@ -28,8 +28,12 @@ public class TransactionService {
         return transactionRepository.findByTransactionType(type);
     }
 
-    public List<Transaction> getTransactionsByCategory(String category) {
-        return transactionRepository.findByCategory(category);
+    public List<Transaction> getTransactionsByCategoryId(Long categoryId) {
+        return transactionRepository.findByCategoryId(categoryId);
+    }
+
+    public List<Transaction> getTransactionsByAccountId(Long accountId) {
+        return transactionRepository.findByAccountId(accountId);
     }
 
     @Transactional
@@ -45,6 +49,9 @@ public class TransactionService {
         existingTransaction.setAmount(transaction.getAmount());
         existingTransaction.setTransactionType(transaction.getTransactionType());
         existingTransaction.setCategory(transaction.getCategory());
+        existingTransaction.setAccount(transaction.getAccount());
+        existingTransaction.setTargetAccount(transaction.getTargetAccount());
+        existingTransaction.setNotes(transaction.getNotes());
         return transactionRepository.save(existingTransaction);
     }
 

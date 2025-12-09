@@ -2,6 +2,7 @@
 
 import { useTransactions } from "@/hooks/useTransactions";
 import TransactionsTable from "@/components/TransactionsTable";
+import ExpenseForm from "@/components/ExpenseForm";
 
 export default function TransactionsPage() {
   const { data: transactions, isLoading, error } = useTransactions();
@@ -25,8 +26,13 @@ export default function TransactionsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Transactions</h1>
+    <div className="container mx-auto px-4 py-8 space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Transactions</h1>
+      </div>
+
+      <ExpenseForm />
+
       <TransactionsTable data={transactions || []} />
     </div>
   );

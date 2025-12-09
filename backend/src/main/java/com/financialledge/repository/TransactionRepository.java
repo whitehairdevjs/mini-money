@@ -12,10 +12,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     
     List<Transaction> findByTransactionType(Transaction.TransactionType transactionType);
     
-    List<Transaction> findByCategory(String category);
+    List<Transaction> findByCategoryId(Long categoryId);
+    
+    List<Transaction> findByAccountId(Long accountId);
     
     List<Transaction> findByTransactionDateBetween(LocalDate startDate, LocalDate endDate);
     
-    List<Transaction> findByTransactionTypeAndCategory(Transaction.TransactionType transactionType, String category);
+    List<Transaction> findByTransactionTypeAndCategoryId(Transaction.TransactionType transactionType, Long categoryId);
 }
 

@@ -11,44 +11,41 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "transactions", schema = "public")
+@Table(name = "budgets", schema = "public")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Transaction {
+public class Budget {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "transaction_date", nullable = false)
-    private LocalDate transactionDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
-    @Column(nullable = false, length = 255)
-    private String description;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal amount;
 
-    @Column(name = "transaction_type", nullable = false, length = 20)
+    @Column(name = "period_type", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
-    private TransactionType transactionType;
+    private PeriodType periodType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "target_account_id")
-    private Account targetAccount;
-
-    @Column(columnDefinition = "TEXT")
-    private String notes;
+    @Column(name = "is_active", nullable = false)
+    @Builder.Default
+    private Boolean isActive = true;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -67,8 +64,8 @@ public class Transaction {
         updatedAt = LocalDateTime.now();
     }
 
-    public enum TransactionType {
-        INCOME, EXPENSE, TRANSFER
+    public enum PeriodType {
+        DAILY, WEEKLY, MONTHLY, YEARLY
     }
 }
 

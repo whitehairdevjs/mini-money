@@ -70,9 +70,10 @@ export default function TransactionsTable({ data }: { data: Transaction[] }) {
       },
       size: 120,
     }),
-    columnHelper.accessor("category", {
+    columnHelper.accessor((row) => row.category?.name ?? "-", {
+      id: "category",
       header: "Category",
-      cell: (info) => info.getValue() || "-",
+      cell: (info) => info.getValue(),
       size: 150,
     }),
   ];
