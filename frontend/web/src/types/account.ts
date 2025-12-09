@@ -1,7 +1,7 @@
 export interface Account {
   id: number;
   name: string;
-  accountType: "CASH" | "BANK" | "CREDIT_CARD" | "INVESTMENT" | "SAVINGS";
+  accountType: "CASH" | "BANK" | "CARD" | "CREDIT_CARD" | "INVESTMENT" | "SAVINGS";
   balance: number;
   currency: string;
   description?: string;

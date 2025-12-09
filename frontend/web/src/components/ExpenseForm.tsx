@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useCreateTransaction } from "@/hooks/useTransactions";
 import { useAccounts } from "@/hooks/useAccounts";
 import { useCategories } from "@/hooks/useCategories";
@@ -41,17 +41,33 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
   const activeAccounts = useMemo(() => {
     const filtered = accounts.filter((acc) => acc.isActive);
     return filtered.sort((a, b) => {
-      // 카드(CREDIT_CARD)가 제일 위에 오도록
-      if (a.accountType === "CREDIT_CARD" && b.accountType !== "CREDIT_CARD") return -1;
-      if (a.accountType !== "CREDIT_CARD" && b.accountType === "CREDIT_CARD") return 1;
+      // 카드(CARD 또는 CREDIT_CARD)가 제일 위에 오도록
+      const aIsCard = a.accountType === "CARD" || a.accountType === "CREDIT_CARD";
+      const bIsCard = b.accountType === "CARD" || b.accountType === "CREDIT_CARD";
+      if (aIsCard && !bIsCard) return -1;
+      if (!aIsCard && bIsCard) return 1;
       // 같은 타입이면 이름순 정렬
       return a.name.localeCompare(b.name, "ko");
     });
   }, [accounts]);
 
+  // 카드 계정 찾기 (기본값으로 사용)
+  const cardAccount = useMemo(() => {
+    return activeAccounts.find(
+      (acc) => acc.accountType === "CARD" || acc.accountType === "CREDIT_CARD"
+    );
+  }, [activeAccounts]);
+
+  // 카드 계정을 기본값으로 설정
+  useEffect(() => {
+    if (!accountId && cardAccount) {
+      setAccountId(String(cardAccount.id));
+    }
+  }, [cardAccount, accountId]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!accountId) return alert("계정을 선택해주세요.");
+    if (!accountId) return alert("결제 수단을 선택해주세요.");
     if (!amount) return alert("금액을 입력해주세요.");
     if (!description) return alert("내역을 입력해주세요.");
 
@@ -81,7 +97,7 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
         <h2 className="text-lg font-semibold text-gray-900">
           수입/지출 입력
         </h2>
-        <span className="text-xs text-gray-500">필수: 계정, 금액, 내역</span>
+        <span className="text-xs text-gray-500">필수: 결제, 금액, 내역</span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -112,7 +128,7 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
         </label>
 
         <label className="space-y-1">
-          <span className="text-sm text-gray-700">계정</span>
+          <span className="text-sm text-gray-700">결제</span>
           <select
             value={accountId}
             onChange={(e) => setAccountId(e.target.value)}
@@ -120,7 +136,7 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
             required
             disabled={accountsLoading}
           >
-            <option value="">계정을 선택하세요</option>
+            <option value="">결제 수단을 선택하세요</option>
             {activeAccounts.map((account) => (
               <option key={account.id} value={account.id}>
                 {account.name} ({account.accountType}) - {account.balance.toLocaleString()}원
