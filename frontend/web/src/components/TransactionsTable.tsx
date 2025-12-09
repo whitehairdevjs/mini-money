@@ -19,7 +19,7 @@ export default function TransactionsTable({ data }: { data: Transaction[] }) {
   const [sorting, setSorting] = useState<any[]>([]);
   const [globalFilter, setGlobalFilter] = useState("");
 
-  const columns: ColumnDef<Transaction>[] = [
+  const columns = [
     columnHelper.accessor("id", {
       header: "ID",
       cell: (info) => info.getValue(),
@@ -99,17 +99,17 @@ export default function TransactionsTable({ data }: { data: Transaction[] }) {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {/* Search Filter */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
         <input
           type="text"
           placeholder="Search transactions..."
           value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full sm:w-auto px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
         />
-        <div className="text-sm text-gray-600">
+        <div className="text-xs sm:text-sm text-gray-600">
           Total: {table.getFilteredRowModel().rows.length} transactions
         </div>
       </div>
@@ -123,7 +123,7 @@ export default function TransactionsTable({ data }: { data: Transaction[] }) {
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    className="px-2 sm:px-3 md:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     style={{ width: header.getSize() }}
                     onClick={header.column.getToggleSortingHandler()}
                   >
@@ -147,7 +147,7 @@ export default function TransactionsTable({ data }: { data: Transaction[] }) {
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="px-6 py-4 text-center text-gray-500"
+                  className="px-4 sm:px-6 py-8 sm:py-12 text-center text-sm sm:text-base text-gray-500"
                 >
                   No transactions found
                 </td>
@@ -161,7 +161,7 @@ export default function TransactionsTable({ data }: { data: Transaction[] }) {
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      className="px-2 sm:px-3 md:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-900"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -177,39 +177,39 @@ export default function TransactionsTable({ data }: { data: Transaction[] }) {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
+        <div className="flex items-center space-x-1 sm:space-x-2">
           <button
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
-            className="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+            className="px-2 sm:px-3 py-1 text-xs sm:text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
           >
             {"<<"}
           </button>
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+            className="px-2 sm:px-3 py-1 text-xs sm:text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
           >
             {"<"}
           </button>
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+            className="px-2 sm:px-3 py-1 text-xs sm:text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
           >
             {">"}
           </button>
           <button
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
-            className="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+            className="px-2 sm:px-3 py-1 text-xs sm:text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
           >
             {">>"}
           </button>
         </div>
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-700">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:space-x-2">
+          <span className="text-xs sm:text-sm text-gray-700">
             Page{" "}
             <strong>
               {table.getState().pagination.pageIndex + 1} of{" "}
@@ -221,7 +221,7 @@ export default function TransactionsTable({ data }: { data: Transaction[] }) {
             onChange={(e) => {
               table.setPageSize(Number(e.target.value));
             }}
-            className="px-3 py-1 border rounded text-sm"
+            className="px-2 sm:px-3 py-1 border rounded text-xs sm:text-sm"
           >
             {[10, 20, 30, 50].map((pageSize) => (
               <option key={pageSize} value={pageSize}>

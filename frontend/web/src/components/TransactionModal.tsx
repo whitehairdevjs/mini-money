@@ -37,29 +37,29 @@ export default function TransactionModal({
       )}
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-4 py-3 border-b sticky top-0 bg-white">
-              <h3 className="text-lg font-semibold">수입/지출 입력</h3>
-              <div className="flex items-center gap-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-2 sm:p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] mx-2 sm:mx-4 overflow-y-auto">
+            <div className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3 border-b sticky top-0 bg-white rounded-t-lg">
+              <h3 className="text-base sm:text-lg font-semibold">수입/지출 입력</h3>
+              <div className="flex items-center gap-1 sm:gap-2">
                 {defaultDate && (
                   <button
                     onClick={openListModal}
-                    className="px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+                    className="px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
                   >
                     리스트 확인
                   </button>
                 )}
                 <button
                   onClick={closeModal}
-                  className="text-gray-500 hover:text-gray-700 text-2xl leading-none w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100"
+                  className="text-gray-500 hover:text-gray-700 text-xl sm:text-2xl leading-none w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded hover:bg-gray-100"
                 >
                   ✕
                 </button>
               </div>
             </div>
 
-            <div className="p-4">
+            <div className="p-3 sm:p-4 md:p-6">
               <ExpenseForm
                 defaultDate={defaultDate}
                 onSuccess={closeModal}

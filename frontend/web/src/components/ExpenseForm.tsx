@@ -91,18 +91,18 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white shadow rounded-lg p-6 space-y-4"
+      className="bg-white shadow rounded-lg p-4 sm:p-6 space-y-3 sm:space-y-4"
     >
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <h2 className="text-base sm:text-lg font-semibold text-gray-900">
           수입/지출 입력
         </h2>
         <span className="text-xs text-gray-500">필수: 결제, 금액, 내역</span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
         <label className="space-y-1">
-          <span className="text-sm text-gray-700">유형</span>
+          <span className="text-xs sm:text-sm text-gray-700">유형</span>
           <select
             value={transactionType}
             onChange={(e) => {
@@ -110,7 +110,7 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
               // 거래 유형 변경 시 카테고리 초기화 (새 유형에 맞지 않을 수 있음)
               setCategoryId("");
             }}
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border rounded px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value={TransactionType.INCOME}>수입</option>
             <option value={TransactionType.EXPENSE}>지출</option>
@@ -118,21 +118,21 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
         </label>
 
         <label className="space-y-1">
-          <span className="text-sm text-gray-700">날짜</span>
+          <span className="text-xs sm:text-sm text-gray-700">날짜</span>
           <input
             type="date"
             value={transactionDate}
             onChange={(e) => setTransactionDate(e.target.value)}
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border rounded px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </label>
 
         <label className="space-y-1">
-          <span className="text-sm text-gray-700">결제</span>
+          <span className="text-xs sm:text-sm text-gray-700">결제</span>
           <select
             value={accountId}
             onChange={(e) => setAccountId(e.target.value)}
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border rounded px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
             disabled={accountsLoading}
           >
@@ -149,11 +149,11 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
         </label>
 
         <label className="space-y-1">
-          <span className="text-sm text-gray-700">카테고리 (선택)</span>
+          <span className="text-xs sm:text-sm text-gray-700">카테고리 (선택)</span>
           <select
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border rounded px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={categoriesLoading}
           >
             <option value="">카테고리를 선택하세요 (선택사항)</option>
@@ -169,37 +169,37 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
         </label>
 
         <label className="space-y-1">
-          <span className="text-sm text-gray-700">금액</span>
+          <span className="text-xs sm:text-sm text-gray-700">금액</span>
           <input
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="예: 15000"
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border rounded px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
         </label>
 
         <label className="md:col-span-2 space-y-1">
-          <span className="text-sm text-gray-700">내역</span>
+          <span className="text-xs sm:text-sm text-gray-700">내역</span>
           <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="예: 점심 식사"
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border rounded px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
         </label>
 
         <label className="md:col-span-2 space-y-1">
-          <span className="text-sm text-gray-700">메모 (선택)</span>
+          <span className="text-xs sm:text-sm text-gray-700">메모 (선택)</span>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="메모를 입력하세요"
             rows={3}
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border rounded px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </label>
       </div>
@@ -207,7 +207,7 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
       <button
         type="submit"
         disabled={isPending}
-        className="w-full md:w-auto px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+        className="w-full md:w-auto px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
       >
         {isPending ? "저장 중..." : "저장"}
       </button>
