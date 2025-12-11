@@ -1,27 +1,36 @@
 "use client";
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
-import { useCreateTransaction } from "@/hooks/useTransactions";
+import { useCreateTransaction, useUpdateTransaction } from "@/hooks/useTransactions";
 import { useAccounts } from "@/hooks/useAccounts";
 import { useCategories } from "@/hooks/useCategories";
-import { TransactionType } from "@/types/transaction";
+import { TransactionType, Transaction } from "@/types/transaction";
 
 interface ExpenseFormProps {
   onSuccess?: () => void;
   defaultDate?: string;
+  initialTransaction?: Transaction | null;
 }
 
-export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps) {
+export default function ExpenseForm({ onSuccess, defaultDate, initialTransaction }: ExpenseFormProps) {
+  const isEditMode = !!initialTransaction?.id;
+  
   const [transactionDate, setTransactionDate] = useState(
-    defaultDate || new Date().toISOString().slice(0, 10)
+    initialTransaction?.transactionDate 
+      ? new Date(initialTransaction.transactionDate).toISOString().slice(0, 10)
+      : defaultDate || new Date().toISOString().slice(0, 10)
   );
-  const [description, setDescription] = useState("");
-  const [amount, setAmount] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [accountId, setAccountId] = useState("");
-  const [notes, setNotes] = useState("");
+  const [description, setDescription] = useState(initialTransaction?.description || "");
+  const [amount, setAmount] = useState(initialTransaction?.amount?.toString() || "");
+  const [categoryId, setCategoryId] = useState(
+    initialTransaction?.category?.id?.toString() || ""
+  );
+  const [accountId, setAccountId] = useState(
+    initialTransaction?.account?.id?.toString() || ""
+  );
+  const [notes, setNotes] = useState(initialTransaction?.notes || "");
   const [transactionType, setTransactionType] = useState<TransactionType>(
-    TransactionType.EXPENSE
+    initialTransaction?.transactionType || TransactionType.EXPENSE
   );
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
@@ -35,7 +44,9 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
     setIsCategoryDropdownOpen(false);
   }, []);
 
-  const { mutateAsync, isPending } = useCreateTransaction();
+  const { mutateAsync: createTransaction, isPending: isCreating } = useCreateTransaction();
+  const { mutateAsync: updateTransaction, isPending: isUpdating } = useUpdateTransaction();
+  const isPending = isCreating || isUpdating;
   const { data: accounts = [], isLoading: accountsLoading } = useAccounts();
   const { data: categories = [], isLoading: categoriesLoading } = useCategories();
 
@@ -74,12 +85,12 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
     );
   }, [activeAccounts]);
 
-  // 카드 계정을 기본값으로 설정
+  // 카드 계정을 기본값으로 설정 (수정 모드가 아니고 계정이 선택되지 않은 경우만)
   useEffect(() => {
-    if (!accountId && cardAccount) {
+    if (!isEditMode && !accountId && cardAccount) {
       setAccountId(String(cardAccount.id));
     }
-  }, [cardAccount, accountId]);
+  }, [cardAccount, accountId, isEditMode]);
 
   // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
@@ -113,7 +124,7 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
     if (!amount) return alert("금액을 입력해주세요.");
     if (!description) return alert("내역을 입력해주세요.");
 
-    await mutateAsync({
+    const transactionData = {
       transactionDate,
       description,
       amount: Number(amount),
@@ -121,12 +132,22 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
       account: { id: Number(accountId) },
       category: categoryId ? { id: Number(categoryId) } : null,
       notes: notes || null,
-    } as any);
+    };
 
-    setDescription("");
-    setAmount("");
-    setCategoryId("");
-    setNotes("");
+    if (isEditMode && initialTransaction?.id) {
+      await updateTransaction({
+        id: initialTransaction.id,
+        transaction: transactionData,
+      });
+    } else {
+      await createTransaction(transactionData as any);
+      // 생성 모드일 때만 폼 초기화
+      setDescription("");
+      setAmount("");
+      setCategoryId("");
+      setNotes("");
+    }
+
     onSuccess?.();
   };
 
@@ -137,7 +158,7 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
     >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <h2 className="text-base sm:text-lg font-semibold text-gray-900">
-          수입/지출 입력
+          {isEditMode ? "거래 수정" : "수입/지출 입력"}
         </h2>
         <span className="text-xs text-gray-500">필수: 결제, 금액, 내역</span>
       </div>
@@ -308,7 +329,7 @@ export default function ExpenseForm({ onSuccess, defaultDate }: ExpenseFormProps
         disabled={isPending}
         className="w-full md:w-auto px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
       >
-        {isPending ? "저장 중..." : "저장"}
+        {isPending ? (isEditMode ? "수정 중..." : "저장 중...") : (isEditMode ? "수정" : "저장")}
       </button>
     </form>
   );

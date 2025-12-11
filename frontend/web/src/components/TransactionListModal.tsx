@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTransactions } from "@/hooks/useTransactions";
 import { Transaction, TransactionType } from "@/types/transaction";
 import CategoryBadge from "./CategoryBadge";
+import TransactionEditModal from "./TransactionEditModal";
 
 interface TransactionListModalProps {
   date: string;
@@ -17,6 +18,7 @@ export default function TransactionListModal({
   onClose,
 }: TransactionListModalProps) {
   const { data: allTransactions = [], isLoading } = useTransactions();
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
   // 해당 날짜의 거래 내역 필터링
   const dayTransactions = useMemo(() => {
@@ -112,7 +114,8 @@ export default function TransactionListModal({
               {dayTransactions.map((transaction) => (
                 <div
                   key={transaction.id}
-                  className="border rounded-lg p-3 sm:p-4 hover:bg-gray-50 transition-colors"
+                  className="border rounded-lg p-3 sm:p-4 hover:bg-gray-50 transition-colors cursor-pointer"
+                  onClick={() => setEditingTransaction(transaction)}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-0">
                     <div className="flex-1 min-w-0">
@@ -171,6 +174,15 @@ export default function TransactionListModal({
           )}
         </div>
       </div>
+
+      {/* Edit Modal */}
+      {editingTransaction && (
+        <TransactionEditModal
+          transaction={editingTransaction}
+          isOpen={!!editingTransaction}
+          onClose={() => setEditingTransaction(null)}
+        />
+      )}
     </div>
   );
 }

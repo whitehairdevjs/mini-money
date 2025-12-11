@@ -13,12 +13,14 @@ import {
 import { Transaction, TransactionType } from "@/types/transaction";
 import CategoryBadge from "./CategoryBadge";
 import { useState } from "react";
+import TransactionEditModal from "./TransactionEditModal";
 
 const columnHelper = createColumnHelper<Transaction>();
 
 export default function TransactionsTable({ data }: { data: Transaction[] }) {
   const [sorting, setSorting] = useState<any[]>([]);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
   const columns = [
     columnHelper.accessor("id", {
@@ -166,7 +168,8 @@ export default function TransactionsTable({ data }: { data: Transaction[] }) {
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="hover:bg-gray-50 transition-colors"
+                  className="hover:bg-gray-50 transition-colors cursor-pointer"
+                  onClick={() => setEditingTransaction(row.original)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td
@@ -241,6 +244,15 @@ export default function TransactionsTable({ data }: { data: Transaction[] }) {
           </select>
         </div>
       </div>
+
+      {/* Edit Modal */}
+      {editingTransaction && (
+        <TransactionEditModal
+          transaction={editingTransaction}
+          isOpen={!!editingTransaction}
+          onClose={() => setEditingTransaction(null)}
+        />
+      )}
     </div>
   );
 }
