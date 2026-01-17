@@ -3,7 +3,8 @@
 import { useTransactions } from "@/hooks/useTransactions";
 import { TransactionType } from "@/types/transaction";
 import { useMemo } from "react";
-import CategoryBadge from "@/components/CategoryBadge";
+import CategoryBadge from "@/components/common/CategoryBadge";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import {
   LineChart,
   Line,
@@ -97,24 +98,68 @@ export default function StatsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-sm sm:text-base md:text-lg text-gray-500">로딩 중...</div>
-      </div>
+      <ProtectedRoute>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-blue-600 mb-4"></div>
+            <div className="text-sm sm:text-base md:text-lg text-gray-600 font-medium">
+              통계 데이터를 불러오는 중...
+            </div>
+          </div>
+        </div>
+      </ProtectedRoute>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen px-4">
-        <div className="text-sm sm:text-base md:text-lg text-red-600 text-center">
-          통계 데이터를 불러오는 중 오류가 발생했습니다: {error.message}
+      <ProtectedRoute>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+          <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 sm:p-8 text-center">
+            <div className="mb-4 flex justify-center">
+              <div className="rounded-full bg-red-100 p-3">
+                <svg
+                  className="w-8 h-8 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">
+              오류가 발생했습니다
+            </h2>
+            <p className="text-sm sm:text-base text-gray-600 mb-6">
+              통계 데이터를 불러오는 중 문제가 발생했습니다.
+            </p>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+              <p className="text-sm text-red-800 break-words">
+                {error.message || "알 수 없는 오류가 발생했습니다."}
+              </p>
+            </div>
+            <button
+              onClick={() => window.location.reload()}
+              className="w-full sm:w-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
+            >
+              다시 시도
+            </button>
+          </div>
         </div>
-      </div>
+      </ProtectedRoute>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 space-y-4 sm:space-y-6 md:space-y-8">
         <div className="flex items-center justify-between">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">통계</h1>
@@ -270,7 +315,8 @@ export default function StatsPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 }
 

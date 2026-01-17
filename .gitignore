@@ -17,6 +17,10 @@ web-build/
 *~
 *.mdc
 
+# Documentation and config files
+*.md
+*.sql
+
 # OS
 .DS_Store
 Thumbs.db

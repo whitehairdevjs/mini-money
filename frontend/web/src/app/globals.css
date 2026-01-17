@@ -20,6 +20,18 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* 모든 입력 필드의 텍스트 색상을 검은색으로 설정 */
+input,
+textarea,
+select {
+  color: #111827; /* text-gray-900 */
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af; /* placeholder-gray-400 */
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
