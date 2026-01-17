@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/lib/api";
 
 interface User {
@@ -24,6 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     // 로컬 스토리지에서 토큰과 사용자 정보 불러오기
@@ -40,6 +42,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (usernameOrEmail: string, password: string) => {
     try {
+      // 이전 사용자의 캐시 클리어
+      queryClient.clear();
+      
       const response = await apiClient.post("/auth/login", {
         usernameOrEmail,
         password,
@@ -59,6 +64,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (username: string, email: string, password: string) => {
     try {
+      // 이전 사용자의 캐시 클리어
+      queryClient.clear();
+      
       const response = await apiClient.post("/auth/register", {
         username,
         email,
@@ -83,6 +91,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     delete apiClient.defaults.headers.common["Authorization"];
+    // React Query 캐시 초기화 - 이전 사용자의 데이터가 남지 않도록
+    queryClient.clear();
   };
 
   return (

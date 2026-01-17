@@ -1,5 +1,7 @@
 package com.financialledge.budget.service;
 
+import com.financialledge.auth.entity.User;
+import com.financialledge.auth.repository.UserRepository;
 import com.financialledge.budget.entity.Budget;
 import com.financialledge.budget.repository.BudgetRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import java.util.List;
 public class BudgetService {
 
     private final BudgetRepository budgetRepository;
+    private final UserRepository userRepository;
 
     public List<Budget> getAllBudgets(Long userId) {
         return budgetRepository.findByUserId(userId);
@@ -46,7 +49,8 @@ public class BudgetService {
 
     @Transactional
     public Budget createBudget(Budget budget, Long userId) {
-        budget.setUserId(userId);
+        User user = userRepository.getReferenceById(userId);
+        budget.setUser(user);
         return budgetRepository.save(budget);
     }
 

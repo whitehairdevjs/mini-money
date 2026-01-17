@@ -1,6 +1,7 @@
 package com.financialledge.budget.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.financialledge.auth.entity.User;
 import com.financialledge.category.entity.Category;
 import com.financialledge.account.entity.Account;
 import jakarta.persistence.*;
@@ -26,8 +27,19 @@ public class Budget {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Column(name = "user_id", nullable = false, insertable = false, updatable = false)
     private Long userId;
+
+    public Long getUserId() {
+        if (user != null) {
+            return user.getId();
+        }
+        return userId;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
@@ -36,10 +48,6 @@ public class Budget {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal amount;
@@ -64,15 +72,28 @@ public class Budget {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @PostLoad
+    protected void onLoad() {
+        if (user != null) {
+            userId = user.getId();
+        }
+    }
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        if (user != null && userId == null) {
+            userId = user.getId();
+        }
     }
 
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+        if (user != null && userId == null) {
+            userId = user.getId();
+        }
     }
 
     public enum PeriodType {

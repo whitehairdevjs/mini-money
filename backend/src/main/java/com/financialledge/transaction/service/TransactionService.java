@@ -1,5 +1,7 @@
 package com.financialledge.transaction.service;
 
+import com.financialledge.auth.entity.User;
+import com.financialledge.auth.repository.UserRepository;
 import com.financialledge.transaction.entity.Transaction;
 import com.financialledge.transaction.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import java.util.List;
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
+    private final UserRepository userRepository;
 
     public List<Transaction> getAllTransactions(Long userId) {
         return transactionRepository.findByUserIdOrderByTransactionDateDescAndUpdatedAtDesc(userId);
@@ -42,7 +45,8 @@ public class TransactionService {
 
     @Transactional
     public Transaction createTransaction(Transaction transaction, Long userId) {
-        transaction.setUserId(userId);
+        User user = userRepository.getReferenceById(userId);
+        transaction.setUser(user);
         return transactionRepository.save(transaction);
     }
 
