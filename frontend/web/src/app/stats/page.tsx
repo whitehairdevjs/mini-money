@@ -219,7 +219,9 @@ export default function StatsPage() {
                   }}
                 />
                 <Tooltip
-                  formatter={(value: number) => formatCurrency(value)}
+                  formatter={(value: number | undefined) => 
+                    value !== undefined ? formatCurrency(value) : ""
+                  }
                   labelStyle={{ color: "#374151" }}
                 />
                 <Line

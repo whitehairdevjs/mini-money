@@ -1,5 +1,6 @@
-package com.financialledge.category.entity;
+package com.financialledge.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,41 +11,27 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Category {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
+    @Column(nullable = false, unique = true, length = 50)
+    private String username;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    @Column(nullable = false, unique = true, length = 100)
+    private String email;
 
-    @Column(length = 7)
-    private String color;
-
-    @Column(length = 50)
-    private String icon;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private Category parent;
-
-    @Column(name = "transaction_type", nullable = false, length = 20)
-    @Enumerated(EnumType.STRING)
-    private TransactionType transactionType;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JsonIgnore
+    @Column(nullable = false)
+    private String password;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -62,8 +49,9 @@ public class Category {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
-    public enum TransactionType {
-        INCOME, EXPENSE, BOTH
-    }
 }
+
+
+
+
+

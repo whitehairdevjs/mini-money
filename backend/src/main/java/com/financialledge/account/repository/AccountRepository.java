@@ -10,11 +10,13 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
     
-    Optional<Account> findByName(String name);
+    List<Account> findByUserId(Long userId);
     
-    List<Account> findByAccountType(Account.AccountType accountType);
+    Optional<Account> findByIdAndUserId(Long id, Long userId);
     
-    List<Account> findByIsActiveTrue();
+    List<Account> findByUserIdAndAccountType(Long userId, Account.AccountType accountType);
     
-    List<Account> findByIsActiveFalse();
+    List<Account> findByUserIdAndIsActiveTrue(Long userId);
+    
+    List<Account> findByUserIdAndIsActiveFalse(Long userId);
 }

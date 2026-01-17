@@ -45,6 +45,10 @@ public class Account {
     @Builder.Default
     private Boolean isActive = true;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
